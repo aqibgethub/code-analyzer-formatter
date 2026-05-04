@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>CodeGuard Pro | Advanced Code Checker & Formatter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #f0f4f8;
+            --bg-secondary: #ffffff;
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --text-muted: #718096;
+            --border-color: #e2e8f0;
+            --accent-primary: #667eea;
+            --accent-secondary: #764ba2;
+            --accent-hover: #5a67d8;
+            --accent-soft: rgba(102, 126, 234, 0.1);
+            --error-bg: rgba(245, 92, 108, 0.1);
+            --error-border: #f56565;
+            --error-text: #e53e3e;
+            --warning-bg: rgba(246, 173, 85, 0.1);
+            --warning-border: #ed8936;
+            --warning-text: #dd6b20;
+            --success-bg: rgba(72, 187, 120, 0.1);
+            --success-border: #48bb78;
+            --success-text: #38a169;
+            --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --shadow-xl: 0 25px 50px rgba(0, 0, 0, 0.25);
+            --radius-md: 1rem;
+            --radius-lg: 1.5rem;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.dark {
+            --bg-primary: #0f0f1a;
+            --bg-secondary: #1a1a2e;
+            --bg-card: rgba(26, 26, 46, 0.95);
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --text-primary: #f7fafc;
+            --text-secondary: #cbd5e0;
+            --text-muted: #a0aec0;
+            --border-color: #2d3748;
+            --accent-soft: rgba(102, 126, 234, 0.15);
+            --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: var(--transition);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: var(--bg-gradient);
+            opacity: 0.05;
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .particle {
+            position: absolute;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        /* Container */
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header Animation */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--bg-gradient);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(102, 126, 234, 0); }
+        }
+
+        .logo-icon i {
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--bg-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .logo h1 span {
+            background: none;
+            -webkit-background-clip: unset;
+            color: var(--text-primary);
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .theme-toggle i {
+            font-size: 1.3rem;
+            color: var(--accent-primary);
+            transition: var(--transition);
+        }
+
+        .tagline {
+            color: var(--text-muted);
+            margin-top: 0.75rem;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Main Card */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .main-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+            transition: var(--transition);
+        }
+
+        .main-card:hover {
+            box-shadow: var(--shadow-xl);
+            transform: translateY(-2px);
+        }
+
+        /* Controls Bar */
+        .controls-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .language-selector {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--bg-primary);
+            padding: 0.5rem 1.25rem;
+            border-radius: 2rem;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .language-selector:hover {
+            box-shadow: var(--shadow-sm);
+            transform: translateY(-2px);
+        }
+
+        .language-selector label {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .language-select {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.5rem 1.5rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .language-select:hover {
+            border-color: var(--accent-primary);
+            transform: scale(1.02);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.7rem 1.5rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: var(--bg-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+            background: var(--accent-soft);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .btn-outline:hover {
+            background: rgba(245, 92, 108, 0.1);
+            border-color: var(--error-text);
+            color: var(--error-text);
+            transform: translateY(-2px);
+        }
+
+        /* Section Styles */
+        .input-section, .output-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .section-header i {
+            color: var(--accent-primary);
+            font-size: 1.2rem;
+        }
+
+        .char-count {
+            margin-left: auto;
+            font-size: 0.75rem;
+            font-weight: normal;
+            color: var(--text-muted);
+            background: var(--accent-soft);
+            padding: 0.25rem 0.75rem;
+            border-radius: 2rem;
+        }
+
+        .code-input {
+            width: 100%;
+            padding: 1.25rem;
+            border-radius: var(--radius-md);
+            border: 2px solid var(--border-color);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            resize: vertical;
+            transition: var(--transition);
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: scale(1.01);
+        }
+
+        /* Error Container */
+        .error-container {
+            background: var(--bg-primary);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            min-height: 140px;
+            transition: var(--transition);
+        }
+
+        .info-message {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--text-muted);
+            padding: 1.5rem;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        .info-message i {
+            font-size: 2rem;
+        }
+
+        .error-item {
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            font-size: 0.9rem;
+            animation: slideInLeft 0.4s ease-out;
+            transition: var(--transition);
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .error-item:hover {
+            transform: translateX(5px);
+        }
+
+        .error-item.error {
+            background: var(--error-bg);
+            border-left: 4px solid var(--error-border);
+            color: var(--error-text);
+        }
+
+        .error-item.warning {
+            background: var(--warning-bg);
+            border-left: 4px solid var(--warning-border);
+            color: var(--warning-text);
+        }
+
+        .error-item.success {
+            background: var(--success-bg);
+            border-left: 4px solid var(--success-border);
+            color: var(--success-text);
+        }
+
+        .error-item i {
+            font-size: 1.2rem;
+            margin-top: 0.125rem;
+        }
+
+        /* Formatted Output */
+        .formatted-container {
+            background: var(--bg-primary);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: var(--transition);
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        .formatted-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .formatted-header span {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .btn-icon {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            color: var(--text-secondary);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-icon:hover {
+            background: var(--accent-soft);
+            color: var(--accent-primary);
+            transform: scale(1.1);
+        }
+
+        .formatted-output {
+            padding: 1.25rem;
+            margin: 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+        }
+
+        /* Loading Animation */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 1rem;
+            }
+
+            .main-card {
+                padding: 1.25rem;
+            }
+
+            .controls-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .action-buttons {
+                justify-content: center;
+            }
+
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .logo h1 {
+                font-size: 1.4rem;
+            }
+
+            .logo-icon {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-primary);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg">
+        <div class="particle" style="width: 300px; height: 300px; top: -150px; right: -150px;"></div>
+        <div class="particle" style="width: 200px; height: 200px; bottom: -100px; left: -100px; animation-delay: 2s;"></div>
+        <div class="particle" style="width: 150px; height: 150px; top: 50%; left: 10%; animation-delay: 4s;"></div>
+    </div>
+
+    <div class="app-container">
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h1>Code<span>Guard</span> <span style="font-size: 0.9rem;">Pro</span></h1>
+                </div>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon" id="moonIcon"></i>
+                    <i class="fas fa-sun hidden" id="sunIcon"></i>
+                </button>
+            </div>
+            <p class="tagline">Enterprise-grade code validation & beautification with real-time analysis</p>
+        </header>
+
+        <main class="main-card">
+            <div class="controls-bar">
+                <div class="language-selector">
+                    <label for="languageSelect">
+                        <i class="fas fa-code-branch"></i> Language
+                    </label>
+                    <select id="languageSelect" class="language-select">
+                        <option value="html">🌐 HTML</option>
+                        <option value="css">🎨 CSS</option>
+                        <option value="javascript">⚡ JavaScript</option>
+                    </select>
+                </div>
+                <div class="action-buttons">
+                    <button id="checkBtn" class="btn btn-primary">
+                        <i class="fas fa-check-circle"></i> Check Code
+                    </button>
+                    <button id="copyBtn" class="btn btn-secondary">
+                        <i class="fas fa-copy"></i> Copy
+                    </button>
+                    <button id="clearBtn" class="btn btn-outline">
+                        <i class="fas fa-trash-alt"></i> Clear
+                    </button>
+                </div>
+            </div>
+
+            <div class="input-section">
+                <div class="section-header">
+                    <i class="fas fa-terminal"></i>
+                    <span>Code Editor</span>
+                    <small class="char-count" id="charCount">0 characters</small>
+                </div>
+                <textarea id="codeInput" class="code-input" 
+                    placeholder="// Paste your code here...
+// Select language and click 'Check Code' to validate and format
+
+Example:
+function hello() {
+    console.log('Welcome to CodeGuard Pro');
+}"
+                    rows="12"></textarea>
+            </div>
+
+            <div class="output-section">
+                <div class="section-header">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analysis Report</span>
+                </div>
+                
+                <div id="errorContainer" class="error-container">
+                    <div class="info-message">
+                        <i class="fas fa-robot"></i>
+                        <p>Ready to analyze your code. Click the check button to begin.</p>
+                    </div>
+                </div>
+
+                <div id="formattedContainer" class="formatted-container hidden">
+                    <div class="formatted-header">
+                        <span><i class="fas fa-magic"></i> Formatted Output</span>
+                        <button id="copyFormattedOnly" class="btn-icon" title="Copy formatted code">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                    <pre id="formattedOutput" class="formatted-output"><code></code></pre>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>© 2024 CodeGuard Pro | Advanced Code Analysis Engine</p>
+            <p class="tagline" style="font-size: 0.7rem;">Supports HTML5, CSS3, ES2020+ | Real-time validation</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const codeInput = document.getElementById('codeInput');
+        const languageSelect = document.getElementById('languageSelect');
+        const checkBtn = document.getElementById('checkBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const errorContainer = document.getElementById('errorContainer');
+        const formattedContainer = document.getElementById('formattedContainer');
+        const formattedOutput = document.getElementById('formattedOutput');
+        const copyFormattedOnly = document.getElementById('copyFormattedOnly');
+        const charCount = document.getElementById('charCount');
+        const themeToggle = document.getElementById('themeToggle');
+        const moonIcon = document.getElementById('moonIcon');
+        const sunIcon = document.getElementById('sunIcon');
+
+        // Character counter with animation
+        codeInput.addEventListener('input', function() {
+            const length = this.value.length;
+            charCount.textContent = length + ' character' + (length !== 1 ? 's' : '');
+            charCount.style.transform = 'scale(1.05)';
+            setTimeout(() => { charCount.style.transform = 'scale(1)'; }, 200);
+        });
+
+        // Clear button with animation
+        clearBtn.addEventListener('click', function() {
+            codeInput.value = '';
+            charCount.textContent = '0 characters';
+            errorContainer.innerHTML = `
+                <div class="info-message">
+                    <i class="fas fa-robot"></i>
+                    <p>Ready to analyze your code. Click the check button to begin.</p>
+                </div>
+            `;
+            formattedContainer.classList.add('hidden');
+            showToast('Editor cleared!', 'info');
+        });
+
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 30px;
+                right: 30px;
+                background: ${type === 'success' ? '#48bb78' : type === 'error' ? '#f56565' : '#4299e1'};
+                color: white;
+                padding: 14px 24px;
+                border-radius: 50px;
+                font-size: 14px;
+                font-weight: 600;
+                z-index: 10000;
+                animation: slideInRight 0.4s ease;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            `;
+            toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'slideOutRight 0.4s ease';
+                setTimeout(() => toast.remove(), 400);
+            }, 2500);
+        }
+
+        // Copy formatted code
+        function copyToClipboard(text, successMsg = 'Copied!') {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(successMsg, 'success');
+            }).catch(() => {
+                showToast('Failed to copy', 'error');
+            });
+        }
+
+        copyBtn.addEventListener('click', function() {
+            if (formattedOutput.innerText && !formattedContainer.classList.contains('hidden')) {
+                copyToClipboard(formattedOutput.innerText, 'Formatted code copied!');
+            } else {
+                showToast('No formatted code to copy', 'warning');
+            }
+        });
+
+        copyFormattedOnly?.addEventListener('click', function() {
+            if (formattedOutput.innerText) {
+                copyToClipboard(formattedOutput.innerText, 'Formatted code copied!');
+            }
+        });
+
+        // HTML Validation
+        function validateHTML(code) {
+            const errors = [];
+            const warnings = [];
+            
+            const tagStack = [];
+            const tagRegex = /<(\/?)([a-zA-Z][a-zA-Z0-9]*)\b[^>]*>/g;
+            let match;
+            while ((match = tagRegex.exec(code)) !== null) {
+                const isClosing = match[1] === '/';
+                const tagName = match[2].toLowerCase();
+                
+                if (!isClosing) {
+                    tagStack.push(tagName);
+                } else {
+                    if (tagStack.length === 0 || tagStack[tagStack.length - 1] !== tagName) {
+                        errors.push(`Unmatched closing tag: &lt;/${tagName}&gt;`);
+                    } else {
+                        tagStack.pop();
+                    }
+                }
+            }
+            
+            if (tagStack.length > 0) {
+                errors.push(`Unclosed tags: ${tagStack.join(', ')}`);
+            }
+            
+            if (!code.match(/<!DOCTYPE\s+html>/i) && code.toLowerCase().includes('<html')) {
+                warnings.push('Missing DOCTYPE declaration');
+            }
+            
+            return { errors, warnings };
+        }
+
+        // CSS Validation
+        function validateCSS(code) {
+            const errors = [];
+            const warnings = [];
+            
+            const openBraces = (code.match(/{/g) || []).length;
+            const closeBraces = (code.match(/}/g) || []).length;
+            
+            if (openBraces !== closeBraces) {
+                errors.push(`Unmatched braces: ${openBraces} opening vs ${closeBraces} closing`);
+            }
+            
+            const lines = code.split('\n');
+            lines.forEach((line, index) => {
+                if (line.includes(':') && !line.includes(';') && !line.includes('}') && !line.includes('{') && line.trim() !== '') {
+                    if (!line.trim().endsWith(';')) {
+                        warnings.push(`Line ${index + 1}: Missing semicolon`);
+                    }
+                }
+            });
+            
+            return { errors, warnings };
+        }
+
+        // JavaScript Validation
+        function validateJS(code) {
+            const errors = [];
+            const warnings = [];
+            
+            const openParen = (code.match(/\(/g) || []).length;
+            const closeParen = (code.match(/\)/g) || []).length;
+            const openBrace = (code.match(/{/g) || []).length;
+            const closeBrace = (code.match(/}/g) || []).length;
+            const openBracket = (code.match(/\[/g) || []).length;
+            const closeBracket = (code.match(/\]/g) || []).length;
+            
+            if (openParen !== closeParen) {
+                errors.push(`Unmatched parentheses: ${openParen} opening vs ${closeParen} closing`);
+            }
+            if (openBrace !== closeBrace) {
+                errors.push(`Unmatched braces: ${openBrace} opening vs ${closeBrace} closing`);
+            }
+            if (openBracket !== closeBracket) {
+                errors.push(`Unmatched brackets: ${openBracket} opening vs ${closeBracket} closing`);
+            }
+            
+            try {
+                new Function(code);
+            } catch (e) {
+                errors.push(`Syntax error: ${e.message}`);
+            }
+            
+            return { errors, warnings };
+        }
+
+        // Format HTML
+        function formatHTML(code) {
+            let formatted = '';
+            let indent = 0;
+            const indentStr = '  ';
+            const lines = code.replace(/>\s+</g, '><').split(/(<[^>]+>)/).filter(Boolean);
+            
+            for (let line of lines) {
+                if (line.match(/^<\/[^>]+>/) && !line.match(/^<[^\/][^>]*\/>$/)) {
+                    indent--;
+                }
+                formatted += indentStr.repeat(Math.max(0, indent)) + line + '\n';
+                if (line.match(/^<[^\/][^>]*>$/) && !line.match(/<[^>]*\/>$/)) {
+                    indent++;
+                }
+            }
+            return formatted || code;
+        }
+
+        // Format CSS
+        function formatCSS(code) {
+            let formatted = '';
+            let indent = 0;
+            const indentStr = '  ';
+            const lines = code.split(/(\{|\})/g);
+            
+            for (let line of lines) {
+                line = line.trim();
+                if (line === '}') indent--;
+                if (line) formatted += indentStr.repeat(Math.max(0, indent)) + line + (line === '{' ? '\n' : '');
+                if (line === '{') { indent++; formatted += '\n'; }
+                if (line && line !== '{' && line !== '}') formatted += '\n';
+            }
+            return formatted || code;
+        }
+
+        // Format JavaScript
+        function formatJS(code) {
+            let formatted = '';
+            let indent = 0;
+            const indentStr = '  ';
+            let currentLine = '';
+            
+            for (let char of code) {
+                if (char === '{') {
+                    formatted += indentStr.repeat(indent) + currentLine + ' {\n';
+                    currentLine = '';
+                    indent++;
+                } else if (char === '}') {
+                    if (currentLine.trim()) formatted += indentStr.repeat(indent) + currentLine + '\n';
+                    indent--;
+                    formatted += indentStr.repeat(indent) + '}\n';
+                    currentLine = '';
+                } else if (char === ';') {
+                    formatted += indentStr.repeat(indent) + currentLine + ';\n';
+                    currentLine = '';
+                } else if (char === '\n') {
+                    if (currentLine.trim()) {
+                        formatted += indentStr.repeat(indent) + currentLine + '\n';
+                        currentLine = '';
+                    }
+                } else {
+                    currentLine += char;
+                }
+            }
+            if (currentLine.trim()) formatted += indentStr.repeat(indent) + currentLine;
+            return formatted || code;
+        }
+
+        // Loading animation for button
+        function setLoading(button, loading) {
+            if (loading) {
+                button.innerHTML = '<span class="loading-spinner"></span> Analyzing...';
+                button.disabled = true;
+            } else {
+                button.innerHTML = '<i class="fas fa-check-circle"></i> Check Code';
+                button.disabled = false;
+            }
+        }
+
+        // Main check function
+        async function checkCode() {
+            const code = codeInput.value.trim();
+            const language = languageSelect.value;
+            
+            if (!code) {
+                errorContainer.innerHTML = `
+                    <div class="error-item warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div><strong>⚠️ Empty Editor!</strong><br>Please paste some code to analyze.</div>
+                    </div>
+                `;
+                formattedContainer.classList.add('hidden');
+                return;
+            }
+            
+            setLoading(checkBtn, true);
+            
+            // Simulate processing for smooth animation
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            let errors = [], warnings = [];
+            let formattedCode = '';
+            
+            switch(language) {
+                case 'html':
+                    const htmlResult = validateHTML(code);
+                    errors = htmlResult.errors;
+                    warnings = htmlResult.warnings;
+                    formattedCode = formatHTML(code);
+                    break;
+                case 'css':
+                    const cssResult = validateCSS(code);
+                    errors = cssResult.errors;
+                    warnings = cssResult.warnings;
+                    formattedCode = formatCSS(code);
+                    break;
+                case 'javascript':
+                    const jsResult = validateJS(code);
+                    errors = jsResult.errors;
+                    warnings = jsResult.warnings;
+                    formattedCode = formatJS(code);
+                    break;
+            }
+            
+            // Display results with animation
+            errorContainer.innerHTML = '';
+            
+            if (errors.length === 0 && warnings.length === 0) {
+                errorContainer.innerHTML = `
+                    <div class="error-item success" style="animation: slideInLeft 0.4s ease-out">
+                        <i class="fas fa-check-circle"></i>
+                        <div><strong>✓ Perfect Code!</strong><br>No syntax issues detected. Your ${language.toUpperCase()} code is valid and well-structured.</div>
+                    </div>
+                `;
+                showToast('Code is valid!', 'success');
+            } else {
+                errors.forEach((err, idx) => {
+                    errorContainer.innerHTML += `
+                        <div class="error-item error" style="animation: slideInLeft 0.4s ease-out ${idx * 0.05}s">
+                            <i class="fas fa-times-circle"></i>
+                            <div><strong>Error:</strong> ${err}</div>
+                        </div>
+                    `;
+                });
+                warnings.forEach((warn, idx) => {
+                    errorContainer.innerHTML += `
+                        <div class="error-item warning" style="animation: slideInLeft 0.4s ease-out ${(errors.length + idx) * 0.05}s">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <div><strong>Warning:</strong> ${warn}</div>
+                        </div>
+                    `;
+                });
+                if (errors.length > 0) {
+                    showToast(`Found ${errors.length} error${errors.length > 1 ? 's' : ''}`, 'error');
+                }
+            }
+            
+            // Display formatted code
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+            
+            if (formattedCode) {
+                formattedOutput.innerHTML = `<code>${escapeHtml(formattedCode)}</code>`;
+            } else {
+                formattedOutput.innerHTML = `<code>${escapeHtml(code)}</code>`;
+            }
+            formattedContainer.classList.remove('hidden');
+            
+            setLoading(checkBtn, false);
+        }
+
+        checkBtn.addEventListener('click', checkCode);
+
+        // Dark mode toggle with animation
+        function initDarkMode() {
+            const saved = localStorage.getItem('codeguard-darkmode');
+            if (saved === 'true') {
+                document.body.classList.add('dark');
+                moonIcon.classList.add('hidden');
+                sunIcon.classList.remove('hidden');
+            }
+        }
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            const isDark = document.body.classList.contains('dark');
+            localStorage.setItem('codeguard-darkmode', isDark);
+            
+            themeToggle.style.transform = 'scale(1.1) rotate(360deg)';
+            setTimeout(() => { themeToggle.style.transform = ''; }, 300);
+            
+            if (isDark) {
+                moonIcon.classList.add('hidden');
+                sunIcon.classList.remove('hidden');
+                showToast('Dark mode activated', 'info');
+            } else {
+                moonIcon.classList.remove('hidden');
+                sunIcon.classList.add('hidden');
+                showToast('Light mode activated', 'info');
+            }
+        });
+
+        initDarkMode();
+
+        // Example code loader
+        const examples = {
+            html: `<div class="container">
+    <h1>Welcome to CodeGuard Pro</h1>
+    <p>Enterprise-grade code validation tool</p>
+    <button class="btn">Get Started</button>
+</div>`,
+            css: `.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 1rem;
+}
+
+.container h1 {
+    color: white;
+    font-size: 2rem;
+}
+
+.btn {
+    background: white;
+    color: #667eea;
+    padding: 0.75rem 1.5rem;
+    border-radius: 2rem;
+    cursor: pointer;
+}`,
+            javascript: `class CodeAnalyzer {
+    constructor(code) {
+        this.code = code;
+        this.errors = [];
+    }
+    
+    analyze() {
+        console.log("Analyzing code...");
+        return this.errors.length === 0;
+    }
+}
+
+const analyzer = new CodeAnalyzer("const x = 42;");
+analyzer.analyze();`
+        };
+        
+        languageSelect.addEventListener('change', function() {
+            if (codeInput.value.trim() === '' || codeInput.value.trim() === examples.html || 
+                codeInput.value.trim() === examples.css || codeInput.value.trim() === examples.javascript) {
+                codeInput.value = examples[this.value];
+                charCount.textContent = codeInput.value.length + ' characters';
+                showToast(`Loaded ${this.value.toUpperCase()} example`, 'info');
+            }
+        });
+    </script>
+</body>
+</html>
